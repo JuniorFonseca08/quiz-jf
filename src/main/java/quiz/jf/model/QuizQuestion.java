@@ -1,20 +1,22 @@
 package quiz.jf.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
-@SequenceGenerator(name = "tb_questao_seq", allocationSize = 1)
+@SequenceGenerator(name = "questao_seq", allocationSize = 1)
 @Entity
-@Table(name = "tb_questao")
+@Table(name = "questao")
 public class QuizQuestion {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tb_questao_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "questao_seq")
     private Long id;
     private String question;
     private String theme;
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "question_id")
+   // @JoinColumn(name = "id_question")
+    @OneToMany(mappedBy = "quizQuestion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonManagedReference
     private List<QuestionAlternative> alternatives = new ArrayList<>();
 
     public QuizQuestion(){

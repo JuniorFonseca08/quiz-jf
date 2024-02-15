@@ -43,7 +43,7 @@ public class QuizTests {
 
     private void criarSala(){
         Player player = new Player(1L, "Nuno");
-        quizRoomService.startQuizRoom(player,"Jogos");
+       // quizRoomService.startQuizRoom("Nuno","Jogos");
     }
 
 

@@ -15,15 +15,9 @@ public class QuestionAlternativeController {
     private QuestionAlternativeService questionAlternativeService;
 
 //    @PostMapping("/save")
-//    public List<QuestionAlternative> save(@RequestBody List<QuestionAlternative> questionAlternative, QuizQuestion question){
-//        return questionAlternativeService.saveAlternativesWithQuestion(questionAlternative, question);
+//    public QuestionAlternative save(@RequestBody QuestionAlternative alternative){
+//        return questionAlternativeService.save(alternative);
 //    }
-
-    @PostMapping("/save")
-    public QuestionAlternative save(@RequestBody QuestionAlternative alternative){
-        return questionAlternativeService.save(alternative);
-    }
-
 
     @GetMapping("/find-all")
     public List<QuestionAlternative> findAll(){

@@ -2,12 +2,12 @@ package quiz.jf.model;
 
 import jakarta.persistence.*;
 
-@SequenceGenerator(name = "quiz_result_seq", allocationSize = 1)
+@SequenceGenerator(name = "quiz_resultado_seq", allocationSize = 1)
 @Entity
-@Table(name = "quiz_result")
+@Table(name = "quiz_resultado")
 public class QuizResult {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "quiz_result_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "quiz_resultado_seq")
     private Long id;
     private Long score;
     @OneToOne

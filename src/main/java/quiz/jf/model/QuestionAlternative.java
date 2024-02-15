@@ -1,17 +1,19 @@
 package quiz.jf.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-@SequenceGenerator(name = "question_alternative_seq", allocationSize = 1)
+@SequenceGenerator(name = "alternativa_seq", allocationSize = 1)
 @Entity
-@Table(name = "question_alternative")
+@Table(name = "alternativa")
 public class QuestionAlternative {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "question_alternative_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "alternativa_seq")
     private Long id;
     private String alternative;
     private boolean isCorrect;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "question_id")
+    @ManyToOne
+    @JoinColumn(name = "questao_id")
+    @JsonBackReference
     private QuizQuestion quizQuestion;
 
     public QuestionAlternative(){
