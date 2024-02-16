@@ -38,9 +38,9 @@ public class QuizQuestionService {
         return quizQuestionRepository.findById(id).get();
     }
 
-    public List<QuizQuestion> findByTheme(String theme){
-        return quizQuestionRepository.findByTheme(theme);
-    }
+//    public List<QuizQuestion> findByTheme(String theme){
+//        return quizQuestionRepository.findByTheme(theme);
+//    }
 
 //    public Optional<QuizQuestion> findByIdWithAlternatives(Long id){
 //        return quizQuestionRepository.findByIdWithAlternatives(id);

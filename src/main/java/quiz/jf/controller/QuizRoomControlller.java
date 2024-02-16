@@ -16,7 +16,7 @@ public class QuizRoomControlller {
     @Autowired
     private QuizRoomService quizRoomService;
     @PostMapping("/new-room")
-    public QuizRoom startQuizRoom(@RequestBody String theme, String nickName){
+    public QuizRoom startQuizRoom(String theme, String nickName){
         return quizRoomService.startQuizRoom(theme, nickName);
     }
 }

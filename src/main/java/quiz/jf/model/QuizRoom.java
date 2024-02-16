@@ -10,7 +10,6 @@ public class QuizRoom {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "quiz_sala_seq")
     private Long id;
     private String theme;
-    private String nickName;
 
     @ManyToOne
     @JoinColumn(name = "player_id")
@@ -20,22 +19,19 @@ public class QuizRoom {
 
     }
 
-    public QuizRoom(Long id, String theme, String nickName, Player player) {
+    public QuizRoom(Long id, String theme, Player player) {
         this.id = id;
         this.theme = theme;
-        this.nickName = nickName;
-        this.player = player;
-    }
-
-    public QuizRoom(String theme, String nickName, Player player) {
-        this.theme = theme;
-        this.nickName = nickName;
         this.player = player;
     }
 
     public QuizRoom(String theme, Player player) {
         this.theme = theme;
         this.player = player;
+    }
+
+    public QuizRoom(String theme) {
+        this.theme = theme;
     }
 
     public Long getId() {
@@ -52,14 +48,6 @@ public class QuizRoom {
 
     public void setTheme(String theme) {
         this.theme = theme;
-    }
-
-    public String getNickName() {
-        return nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
     }
 
     public Player getPlayer() {
@@ -91,11 +79,6 @@ public class QuizRoom {
             return this;
         }
 
-        public Builder nickName(String nickName) {
-            quizRoom.setNickName(nickName);
-            return this;
-        }
-
         public Builder player(Player player) {
             quizRoom.setPlayer(player);
             return this;
@@ -111,7 +94,6 @@ public class QuizRoom {
         return "QuizRoom{" +
                 "id=" + id +
                 ", theme='" + theme + '\'' +
-                ", nickName='" + nickName + '\'' +
                 ", player=" + player +
                 '}';
     }

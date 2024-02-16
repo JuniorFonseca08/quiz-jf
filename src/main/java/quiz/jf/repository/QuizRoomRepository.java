@@ -7,7 +7,6 @@ import quiz.jf.model.Player;
 import quiz.jf.model.QuizRoom;
 
 public interface QuizRoomRepository extends JpaRepository<QuizRoom, Long> {
-    QuizRoom findByNickNameAndTheme(String theme, String nickName);
 
     QuizRoom findByThemeAndPlayer(String theme, Player player);
 }

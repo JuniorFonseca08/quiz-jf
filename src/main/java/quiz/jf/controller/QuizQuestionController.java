@@ -25,10 +25,10 @@ public class QuizQuestionController {
         return quizQuestionService.findById(id);
     }
 
-    @GetMapping("find-by-theme/{theme}")
-    public List<QuizQuestion> findByTheme(String theme){
-        return quizQuestionService.findByTheme(theme);
-    }
+//    @GetMapping("find-by-theme/{theme}")
+//    public List<QuizQuestion> findByTheme(String theme){
+//        return quizQuestionService.findByTheme(theme);
+//    }
 
     @PostMapping("/save")
     public QuizQuestion save(@RequestBody QuizQuestion question){

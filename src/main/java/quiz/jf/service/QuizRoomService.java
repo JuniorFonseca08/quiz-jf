@@ -31,22 +31,16 @@ public class QuizRoomService {
 //    }
 
     public QuizRoom startQuizRoom(String theme, String nickName){
-        // Verifica se o jogador com o nickName fornecido existe
         Player player = playerRepository.findByNickName(nickName);
 
         if (player == null) {
-            // Se o jogador não existir, você pode lidar com isso de acordo com a lógica do seu aplicativo
             throw new IllegalArgumentException("Player not found with nickName: " + nickName);
         }
-
-        // Verifica se já existe uma sala com o nickName do jogador e o theme fornecidos
         QuizRoom existingRoom = quizRoomRepository.findByThemeAndPlayer(theme, player);
 
         if (existingRoom != null){
-            // Se a sala já existir, retorne a sala existente
             return existingRoom;
         } else {
-            // Se a sala não existir, crie uma nova sala associada ao jogador e a salve no banco de dados
             QuizRoom newRoom = new QuizRoom(theme, player);
             return quizRoomRepository.save(newRoom);
         }
