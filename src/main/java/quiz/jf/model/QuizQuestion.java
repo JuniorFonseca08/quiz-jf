@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+
+
 @SequenceGenerator(name = "questao_seq", allocationSize = 1)
 @Entity
 @Table(name = "questao")
@@ -14,10 +16,10 @@ public class QuizQuestion {
     private Long id;
     private String question;
     private String theme;
-   // @JoinColumn(name = "id_question")
     @OneToMany(mappedBy = "quizQuestion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonManagedReference
     private List<QuestionAlternative> alternatives = new ArrayList<>();
+
 
     public QuizQuestion(){
 
@@ -76,7 +78,7 @@ public class QuizQuestion {
             quizQuestion = new QuizQuestion();
         }
 
-        public static Builder aQuestion() {
+        public static Builder aQuizQuestion() {
             return new Builder();
         }
 
@@ -107,7 +109,7 @@ public class QuizQuestion {
 
     @Override
     public String toString() {
-        return "QuizQuestionController{" +
+        return "QuizQuestion{" +
                 "id=" + id +
                 ", question='" + question + '\'' +
                 ", theme='" + theme + '\'' +

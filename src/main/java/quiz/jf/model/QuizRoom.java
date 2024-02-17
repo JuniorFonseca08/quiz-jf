@@ -2,6 +2,9 @@ package quiz.jf.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @SequenceGenerator(name = "quiz_sala_seq", allocationSize = 1)
 @Entity
 @Table(name = "quiz_sala")
@@ -10,10 +13,13 @@ public class QuizRoom {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "quiz_sala_seq")
     private Long id;
     private String theme;
-
     @ManyToOne
     @JoinColumn(name = "player_id")
     private Player player;
+
+    @OneToMany(mappedBy = "quizRoom", cascade = CascadeType.ALL)
+    private List<Gameplay> gameplay = new ArrayList<>();
+
 
     public QuizRoom(){
 
@@ -30,8 +36,15 @@ public class QuizRoom {
         this.player = player;
     }
 
-    public QuizRoom(String theme) {
+    public QuizRoom(Long score, Player player) {
+        this.player = player;
+    }
+
+    public QuizRoom(Long id, String theme, Player player, List<Gameplay> gameplay) {
+        this.id = id;
         this.theme = theme;
+        this.player = player;
+        this.gameplay = gameplay;
     }
 
     public Long getId() {
@@ -57,6 +70,15 @@ public class QuizRoom {
     public void setPlayer(Player player) {
         this.player = player;
     }
+
+    public List<Gameplay> getGameplay() {
+        return gameplay;
+    }
+
+    public void setGameplay(List<Gameplay> gameplay) {
+        this.gameplay = gameplay;
+    }
+
 
     public static final class Builder {
         private QuizRoom quizRoom;
@@ -84,6 +106,11 @@ public class QuizRoom {
             return this;
         }
 
+        public Builder gameplay(List<Gameplay> gameplay) {
+            quizRoom.setGameplay(gameplay);
+            return this;
+        }
+
         public QuizRoom build() {
             return quizRoom;
         }
@@ -95,6 +122,7 @@ public class QuizRoom {
                 "id=" + id +
                 ", theme='" + theme + '\'' +
                 ", player=" + player +
+                ", gameplay=" + gameplay +
                 '}';
     }
 }
