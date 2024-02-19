@@ -10,14 +10,15 @@ public class Player {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "player_seq")
     private Long id;
+    @Column(name = "apelido")
     private String nickName;
+    @Column(name = "nome_completo")
     private String fullName;
+    @Column(name = "idade")
     private int age;
     private String email;
+    @Column(name = "senha")
     private String password;
-
-    @OneToOne(mappedBy = "player", cascade = CascadeType.ALL)
-    private QuizResult quizResult;
 
     public Player(){
 
@@ -43,16 +44,6 @@ public class Player {
         this.age = age;
         this.email = email;
         this.password = password;
-    }
-
-    public Player(Long id, String nickName, String fullName, int age, String email, String password, QuizResult quizResult) {
-        this.id = id;
-        this.nickName = nickName;
-        this.fullName = fullName;
-        this.age = age;
-        this.email = email;
-        this.password = password;
-        this.quizResult = quizResult;
     }
 
     public Long getId() {
@@ -103,15 +94,6 @@ public class Player {
         this.password = password;
     }
 
-    public QuizResult getQuizResult() {
-        return quizResult;
-    }
-
-    public void setQuizResult(QuizResult quizResult) {
-        this.quizResult = quizResult;
-    }
-
-
     public static final class Builder {
         private Player player;
 
@@ -153,11 +135,6 @@ public class Player {
             return this;
         }
 
-        public Builder quizResult(QuizResult quizResult) {
-            player.setQuizResult(quizResult);
-            return this;
-        }
-
         public Player build() {
             return player;
         }
@@ -172,7 +149,6 @@ public class Player {
                 ", age=" + age +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", quizResult=" + quizResult +
                 '}';
     }
 }

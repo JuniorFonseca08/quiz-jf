@@ -5,10 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import quiz.jf.model.Player;
 import quiz.jf.model.QuestionAlternative;
-import quiz.jf.model.QuizQuestion;
-import quiz.jf.model.QuizRoom;
+import quiz.jf.model.Question;
 import quiz.jf.service.PlayerService;
-import quiz.jf.service.QuizQuestionService;
+import quiz.jf.service.QuestionService;
 import quiz.jf.service.QuizRoomService;
 
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ public class QuizTests {
     @Autowired
     private QuizRoomService quizRoomService;
     @Autowired
-    private QuizQuestionService quizQuestionService;
+    private QuestionService questionService;
 
 
     @Test
@@ -48,9 +47,9 @@ public class QuizTests {
 
 
     private void salvarQuestao(){
-        QuizQuestion quizQuestion = new QuizQuestion();
-        quizQuestion.setQuestion("Qual é o jogo mais premiado da história?");
-        quizQuestion.setTheme("Jogos");
+        Question question = new Question();
+        question.setQuery("Qual é o jogo mais premiado da história?");
+        question.setTheme("Jogos");
 
         List<QuestionAlternative> alternatives = new ArrayList<>();
         alternatives.add(new QuestionAlternative("The Legend of Zelda: Breath of the Wild",false));
@@ -58,8 +57,8 @@ public class QuizTests {
         alternatives.add(new QuestionAlternative("Red Dead Redemption 2",false));
         alternatives.add(new QuestionAlternative("God of War",false));
 
-        quizQuestion.setAlternatives(alternatives);
+        question.setAlternatives(alternatives);
 
-        quizQuestionService.saveQuestion(quizQuestion);
+        questionService.saveQuestion(question);
     }
 }

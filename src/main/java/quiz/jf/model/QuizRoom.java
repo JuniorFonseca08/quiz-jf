@@ -1,5 +1,8 @@
 package quiz.jf.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -15,9 +18,11 @@ public class QuizRoom {
     private String theme;
     @ManyToOne
     @JoinColumn(name = "player_id")
+    @JsonBackReference
     private Player player;
 
     @OneToMany(mappedBy = "quizRoom", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Gameplay> gameplay = new ArrayList<>();
 
 

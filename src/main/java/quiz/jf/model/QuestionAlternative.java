@@ -1,6 +1,7 @@
 package quiz.jf.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 @SequenceGenerator(name = "alternativa_seq", allocationSize = 1)
 @Entity
@@ -9,12 +10,14 @@ public class QuestionAlternative {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "alternativa_seq")
     private Long id;
+    @Column(name = "alternativa")
     private String alternative;
+    @Column(name = "eh_correta")
     private boolean isCorrect;
     @ManyToOne
     @JoinColumn(name = "questao_id")
-    @JsonBackReference
-    private QuizQuestion quizQuestion;
+    @JsonIgnore
+    private Question question;
 
     public QuestionAlternative(){
 
@@ -31,10 +34,10 @@ public class QuestionAlternative {
         this.isCorrect = isCorrect;
     }
 
-    public QuestionAlternative(String alternative, boolean isCorrect, QuizQuestion quizQuestion) {
+    public QuestionAlternative(String alternative, boolean isCorrect, Question question) {
         this.alternative = alternative;
         this.isCorrect = isCorrect;
-        this.quizQuestion = quizQuestion;
+        this.question = question;
     }
 
     public Long getId() {
@@ -61,12 +64,12 @@ public class QuestionAlternative {
         isCorrect = correct;
     }
 
-    public QuizQuestion getQuizQuestion() {
-        return quizQuestion;
+    public Question getQuizQuestion() {
+        return question;
     }
 
-    public void setQuizQuestion(QuizQuestion quizQuestion) {
-        this.quizQuestion = quizQuestion;
+    public void setQuizQuestion(Question question) {
+        this.question = question;
     }
 
 
@@ -91,8 +94,8 @@ public class QuestionAlternative {
             return this;
         }
 
-        public Builder quizQuestion(QuizQuestion quizQuestion) {
-            questionAlternative.setQuizQuestion(quizQuestion);
+        public Builder quizQuestion(Question question) {
+            questionAlternative.setQuizQuestion(question);
             return this;
         }
 

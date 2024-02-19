@@ -1,5 +1,7 @@
 package quiz.jf.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -10,30 +12,32 @@ import java.util.List;
 @SequenceGenerator(name = "questao_seq", allocationSize = 1)
 @Entity
 @Table(name = "questao")
-public class QuizQuestion {
+public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "questao_seq")
     private Long id;
-    private String question;
+    @Column(name = "questao")
+    private String query;
+    @Column(name = "tema")
     private String theme;
-    @OneToMany(mappedBy = "quizQuestion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JsonManagedReference
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<QuestionAlternative> alternatives = new ArrayList<>();
 
 
-    public QuizQuestion(){
+    public Question(){
 
     }
 
-    public QuizQuestion(Long id, String question, String theme, List<QuestionAlternative> alternatives) {
+    public Question(Long id, String query, String theme, List<QuestionAlternative> alternatives) {
         this.id = id;
-        this.question = question;
+        this.query = query;
         this.theme = theme;
         this.alternatives = alternatives;
     }
 
-    public QuizQuestion(String question, String theme, List<QuestionAlternative> alternatives) {
-        this.question = question;
+    public Question(String query, String theme, List<QuestionAlternative> alternatives) {
+        this.query = query;
         this.theme = theme;
         this.alternatives = alternatives;
     }
@@ -46,12 +50,12 @@ public class QuizQuestion {
         this.id = id;
     }
 
-    public String getQuestion() {
-        return question;
+    public String getQuery() {
+        return query;
     }
 
-    public void setQuestion(String question) {
-        this.question = question;
+    public void setQuery(String query) {
+        this.query = query;
     }
 
     public String getTheme() {
@@ -70,48 +74,47 @@ public class QuizQuestion {
         this.alternatives = alternatives;
     }
 
-
     public static final class Builder {
-        private QuizQuestion quizQuestion;
+        private Question question;
 
         private Builder() {
-            quizQuestion = new QuizQuestion();
+            question = new Question();
         }
 
-        public static Builder aQuizQuestion() {
+        public static Builder aQuestion() {
             return new Builder();
         }
 
         public Builder id(Long id) {
-            quizQuestion.setId(id);
+            question.setId(id);
             return this;
         }
 
-        public Builder question(String question) {
-            quizQuestion.setQuestion(question);
+        public Builder query(String query) {
+            question.setQuery(query);
             return this;
         }
 
         public Builder theme(String theme) {
-            quizQuestion.setTheme(theme);
+            question.setTheme(theme);
             return this;
         }
 
         public Builder alternatives(List<QuestionAlternative> alternatives) {
-            quizQuestion.setAlternatives(alternatives);
+            question.setAlternatives(alternatives);
             return this;
         }
 
-        public QuizQuestion build() {
-            return quizQuestion;
+        public Question build() {
+            return question;
         }
     }
 
     @Override
     public String toString() {
-        return "QuizQuestion{" +
+        return "Question{" +
                 "id=" + id +
-                ", question='" + question + '\'' +
+                ", query='" + query + '\'' +
                 ", theme='" + theme + '\'' +
                 ", alternatives=" + alternatives +
                 '}';

@@ -3,7 +3,6 @@ package quiz.jf.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import quiz.jf.model.QuestionAlternative;
-import quiz.jf.model.QuizQuestion;
 import quiz.jf.service.QuestionAlternativeService;
 
 import java.util.List;

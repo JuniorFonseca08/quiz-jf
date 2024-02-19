@@ -1,15 +1,11 @@
 package quiz.jf.service;
 
-import org.aspectj.weaver.patterns.TypePatternQuestions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import quiz.jf.model.Player;
-import quiz.jf.model.QuizQuestion;
 import quiz.jf.model.QuizRoom;
 import quiz.jf.repository.PlayerRepository;
 import quiz.jf.repository.QuizRoomRepository;
-
-import java.util.ArrayList;
 
 @Service
 public class QuizRoomService {
@@ -18,17 +14,6 @@ public class QuizRoomService {
     private QuizRoomRepository quizRoomRepository;
     @Autowired
     private PlayerRepository playerRepository;
-
-//    public QuizRoom startQuizRoom(String nickName, String theme){
-//        QuizRoom existingRoom = quizRoomRepository.findByNickNameAndTheme(nickName, theme);
-//
-//        if (existingRoom != null){
-//            return existingRoom;
-//        } else {
-//            QuizRoom newRoom = new QuizRoom(nickName, theme);
-//            return quizRoomRepository.save(newRoom);
-//        }
-//    }
 
     public QuizRoom startQuizRoom(String theme, String nickName){
         Player player = playerRepository.findByNickName(nickName);
@@ -44,6 +29,14 @@ public class QuizRoomService {
             QuizRoom newRoom = new QuizRoom(theme, player);
             return quizRoomRepository.save(newRoom);
         }
+    }
+
+    public QuizRoom findById(Long id){
+        return quizRoomRepository.findById(id).get();
+    }
+
+    public Player findPlayerByNickName(String nickName){
+        return playerRepository.findByNickName(nickName);
     }
 
 

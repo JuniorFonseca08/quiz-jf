@@ -1,5 +1,8 @@
 package quiz.jf.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -14,44 +17,28 @@ public class Gameplay {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gameplay_seq")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "player_id")
-    private Player player;
+    @Column(name = "jogador")
+    private String player;
 
     @ManyToOne
     @JoinColumn(name = "quiz_sala_id")
+    @JsonIgnore
     private QuizRoom quizRoom;
 
-    @OneToMany()
-    @JoinColumn(name = "questao_id")
-    private List<QuizQuestion> questionList = new ArrayList<>();
+    @OneToMany(mappedBy = "gameplay", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<GameplayQuestions> questionGameplays = new ArrayList<>();
 
-    private Long score;
-
-    private Boolean wasPlayed;
-
-    private Boolean playerWin;
 
     public Gameplay() {
 
     }
 
-    public Gameplay(Long id, Player player, QuizRoom quizRoom, List<QuizQuestion> questionList, Long score) {
+    public Gameplay(Long id, String player, QuizRoom quizRoom, List<GameplayQuestions> questionGameplays) {
         this.id = id;
         this.player = player;
         this.quizRoom = quizRoom;
-        this.questionList = questionList;
-        this.score = score;
-    }
-
-    public Gameplay(Long id, Player player, QuizRoom quizRoom, List<QuizQuestion> questionList, Long score, Boolean wasPlayed, Boolean playerWin) {
-        this.id = id;
-        this.player = player;
-        this.quizRoom = quizRoom;
-        this.questionList = questionList;
-        this.score = score;
-        this.wasPlayed = wasPlayed;
-        this.playerWin = playerWin;
+        this.questionGameplays = questionGameplays;
     }
 
     public Long getId() {
@@ -62,11 +49,11 @@ public class Gameplay {
         this.id = id;
     }
 
-    public Player getPlayer() {
+    public String getPlayer() {
         return player;
     }
 
-    public void setPlayer(Player player) {
+    public void setPlayer(String player) {
         this.player = player;
     }
 
@@ -78,36 +65,12 @@ public class Gameplay {
         this.quizRoom = quizRoom;
     }
 
-    public List<QuizQuestion> getQuestionList() {
-        return questionList;
+    public List<GameplayQuestions> getQuestionGameplays() {
+        return questionGameplays;
     }
 
-    public void setQuestionList(List<QuizQuestion> questionList) {
-        this.questionList = questionList;
-    }
-
-    public Long getScore() {
-        return score;
-    }
-
-    public void setScore(Long score) {
-        this.score = score;
-    }
-
-    public Boolean getWasPlayed() {
-        return wasPlayed;
-    }
-
-    public void setWasPlayed(Boolean wasPlayed) {
-        this.wasPlayed = wasPlayed;
-    }
-
-    public Boolean getPlayerWin() {
-        return playerWin;
-    }
-
-    public void setPlayerWin(Boolean playerWin) {
-        this.playerWin = playerWin;
+    public void setQuestionGameplays(List<GameplayQuestions> questionGameplays) {
+        this.questionGameplays = questionGameplays;
     }
 
 
@@ -127,7 +90,7 @@ public class Gameplay {
             return this;
         }
 
-        public Builder player(Player player) {
+        public Builder player(String player) {
             gameplay.setPlayer(player);
             return this;
         }
@@ -137,23 +100,8 @@ public class Gameplay {
             return this;
         }
 
-        public Builder questionList(List<QuizQuestion> questionList) {
-            gameplay.setQuestionList(questionList);
-            return this;
-        }
-
-        public Builder score(Long score) {
-            gameplay.setScore(score);
-            return this;
-        }
-
-        public Builder wasPlayed(Boolean wasPlayed) {
-            gameplay.setWasPlayed(wasPlayed);
-            return this;
-        }
-
-        public Builder playerWin(Boolean playerWin) {
-            gameplay.setPlayerWin(playerWin);
+        public Builder questionGameplays(List<GameplayQuestions> questionGameplays) {
+            gameplay.setQuestionGameplays(questionGameplays);
             return this;
         }
 
@@ -166,12 +114,9 @@ public class Gameplay {
     public String toString() {
         return "Gameplay{" +
                 "id=" + id +
-                ", player=" + player +
+                ", player='" + player + '\'' +
                 ", quizRoom=" + quizRoom +
-                ", questionList=" + questionList +
-                ", score=" + score +
-                ", wasPlayed=" + wasPlayed +
-                ", playerWin=" + playerWin +
+                ", questionGameplays=" + questionGameplays +
                 '}';
     }
 }

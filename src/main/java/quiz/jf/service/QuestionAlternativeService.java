@@ -3,9 +3,9 @@ package quiz.jf.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import quiz.jf.model.QuestionAlternative;
-import quiz.jf.model.QuizQuestion;
+import quiz.jf.model.Question;
 import quiz.jf.repository.QuestionAlternativeRepository;
-import quiz.jf.repository.QuizQuestionRepository;
+import quiz.jf.repository.QuestionRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,9 +16,9 @@ public class QuestionAlternativeService {
     private QuestionAlternativeRepository questionAlternativeRepository;
 
     @Autowired
-    private QuizQuestionRepository quizQuestionRepository;
+    private QuestionRepository questionRepository;
 
-//    public List<QuestionAlternative> saveAlternativesWithQuestion(List<QuestionAlternative> alternativeList, QuizQuestion question){
+//    public List<QuestionAlternative> saveAlternativesWithQuestion(List<QuestionAlternative> alternativeList, Question question){
 //
 //        for (QuestionAlternative alternative : alternativeList){
 //            alternative.setQuizQuestion(question);
@@ -35,7 +35,7 @@ public class QuestionAlternativeService {
     }
 
     public QuestionAlternative save(QuestionAlternative alternative){
-        Optional<QuizQuestion> question = quizQuestionRepository.findById(alternative.getId());
+        Optional<Question> question = questionRepository.findById(alternative.getId());
         question.ifPresent(value -> alternative.setQuizQuestion(question.get()));
 
         QuestionAlternative savedAlternative = questionAlternativeRepository.save(alternative);
