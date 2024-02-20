@@ -2,10 +2,12 @@ package quiz.jf.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 @SequenceGenerator(name = "alternativa_seq", allocationSize = 1)
 @Entity
 @Table(name = "alternativa")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class QuestionAlternative {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "alternativa_seq")

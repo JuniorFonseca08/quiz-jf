@@ -2,6 +2,7 @@ package quiz.jf.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @SequenceGenerator(name = "questao_seq", allocationSize = 1)
 @Entity
 @Table(name = "questao")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "questao_seq")

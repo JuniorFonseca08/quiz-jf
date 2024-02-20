@@ -1,10 +1,12 @@
 package quiz.jf.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @SequenceGenerator(name = "player_seq", allocationSize = 1)
 @Entity
 @Table(name = "player")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Player {
 
     @Id

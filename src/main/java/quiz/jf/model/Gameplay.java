@@ -2,6 +2,7 @@ package quiz.jf.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -11,6 +12,7 @@ import java.util.List;
 @SequenceGenerator(name = "gameplay_seq", allocationSize = 1)
 @Entity
 @Table(name = "gameplay")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Gameplay {
 
     @Id
@@ -115,7 +117,6 @@ public class Gameplay {
         return "Gameplay{" +
                 "id=" + id +
                 ", player='" + player + '\'' +
-                ", quizRoom=" + quizRoom +
                 ", questionGameplays=" + questionGameplays +
                 '}';
     }

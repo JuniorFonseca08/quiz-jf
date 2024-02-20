@@ -1,12 +1,9 @@
 package quiz.jf.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import quiz.jf.model.Gameplay;
-import quiz.jf.repository.GameplayQuestionsRepository;
+import quiz.jf.model.Question;
 import quiz.jf.service.GameplayQuestionsService;
 import quiz.jf.service.GameplayService;
 
@@ -26,4 +23,27 @@ public class GameplayController {
         return gameplayService.createGameplay(roomId);
     }
 
+    @GetMapping("/{gameplayId}/questions")
+    public List<Question> findAllQuestionsByGameplay(@PathVariable Long gameplayId){
+        Gameplay gameplay = gameplayService.findById(gameplayId);
+        return gameplayQuestionsService.findAllQuestionsByGameplay(gameplay);
+    }
+
+//    @GetMapping("/{gameplayId}/nextUnansweredQuestion")
+//    public ResponseEntity<Question> getNextUnansweredQuestion(@PathVariable Long gameplayId) {
+//        Gameplay gameplay = gameplayService.findById(gameplayId);
+//        Question nextUnansweredQuestion = gameplayQuestionsService.findNextUnansweredQuestion(gameplay);
+//
+//        if (nextUnansweredQuestion != null) {
+//            return ResponseEntity.ok(nextUnansweredQuestion);
+//        } else {
+//            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+//        }
+//    }
+
+    @PostMapping("/check-answer")
+    public Question checkAnswer(Gameplay question, String playerAnswer) {
+        Question isCorrect = gameplayQuestionsService.findNextUnansweredQuestion(question, playerAnswer);
+        return isCorrect;
+    }
 }

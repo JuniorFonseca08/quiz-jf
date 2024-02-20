@@ -2,6 +2,7 @@ package quiz.jf.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -11,6 +12,7 @@ import java.util.List;
 @SequenceGenerator(name = "quiz_sala_seq", allocationSize = 1)
 @Entity
 @Table(name = "quiz_sala")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class QuizRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "quiz_sala_seq")
@@ -18,7 +20,7 @@ public class QuizRoom {
     private String theme;
     @ManyToOne
     @JoinColumn(name = "player_id")
-    @JsonBackReference
+    @JsonIgnore
     private Player player;
 
     @OneToMany(mappedBy = "quizRoom", cascade = CascadeType.ALL)
@@ -127,7 +129,6 @@ public class QuizRoom {
                 "id=" + id +
                 ", theme='" + theme + '\'' +
                 ", player=" + player +
-                ", gameplay=" + gameplay +
                 '}';
     }
 }

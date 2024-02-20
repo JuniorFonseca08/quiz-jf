@@ -9,6 +9,7 @@ import quiz.jf.model.QuestionAlternative;
 import quiz.jf.repository.GameplayQuestionsRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class GameplayQuestionsService {
@@ -25,30 +26,48 @@ public class GameplayQuestionsService {
                 .orElseThrow(() -> new IllegalArgumentException("Gameplay question not found with ID: " + id));
     }
 
-    public void verifyPlayerResponses(Gameplay gameplay) {
-        List<GameplayQuestions> gameplayQuestionsList = gameplay.getQuestionGameplays();
-
-        for (GameplayQuestions gameplayQuestion : gameplayQuestionsList) {
-            // Obtém a questão associada ao GameplayQuestions
-            Question question = gameplayQuestion.getQuestion();
-
-            // Obtém a alternativa correta da questão
-            QuestionAlternative correctAlternative = question.getCorrectAlternative();
-
-            // Obtém a alternativa selecionada pelo jogador
-            QuestionAlternative selectedAlternative = gameplayQuestion.getSelectedAlternative();
-
-            // Verifica se a alternativa selecionada é correta
-            boolean isCorrect = selectedAlternative != null && selectedAlternative.isCorrect();
-
-            // Atualiza as informações da questão no jogo
-            gameplayQuestion.setWasPlayed(true);
-            gameplayQuestion.setCorrectAnswer(isCorrect);
-            gameplayQuestion.setScore(isCorrect ? 10L : 0L);
-
-            // Salva a questão atualizada no banco de dados
-            gameplayQuestionsRepository.save(gameplayQuestion);
-        }
+    public List<Question> findAllQuestionsByGameplay(Gameplay gameplay){
+        return gameplayQuestionsRepository.findAllQuestionsByGameplay(gameplay);
     }
+
+    public Question findNextUnansweredQuestion(Gameplay gameplay, String playerAnswer) {
+        List<GameplayQuestions> questionGameplays = gameplay.getQuestionGameplays();
+
+        Optional<GameplayQuestions> nextQuestion = questionGameplays.stream()
+                .filter(question -> !question.getWasPlayed())
+                .findFirst();
+
+        if (nextQuestion.isPresent()) {
+            GameplayQuestions nextQuestionObject = nextQuestion.get();
+            Question question = nextQuestionObject.getQuestion();
+
+            // Verifique se a resposta do jogador está correta
+            boolean isCorrectAnswer = checkAnswer(question, playerAnswer);
+
+            // Atualize o atributo correctAnswer se a resposta for correta
+            if (isCorrectAnswer) {
+                nextQuestionObject.setCorrectAnswer(true);
+                // Salve a alteração no banco de dados
+                save(nextQuestionObject);
+            }
+
+            return question;
+        }
+        return null;
+    }
+
+    // Método para verificar se a resposta do jogador está correta
+    public boolean checkAnswer(Question question, String playerAnswer) {
+        for (QuestionAlternative questionAlternative : question.getAlternatives()) {
+            // Verifica se a alternativa é a correta e se o texto corresponde à resposta do jogador
+            if (questionAlternative.isCorrect() && questionAlternative.getAlternative().equalsIgnoreCase(playerAnswer)) {
+                return true; // Resposta correta encontrada
+            }
+        }
+        return false;
+    }
+
+
+
 
 }

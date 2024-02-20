@@ -44,4 +44,8 @@ public class GameplayService {
         return gameplayRepository.save(gameplay);
     }
 
+    public Gameplay findById(Long id){
+        return gameplayRepository.findById(id).get();
+    }
+
 }

@@ -1,23 +1,25 @@
 package quiz.jf.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
 @SequenceGenerator(name = "questoes_gameplay_seq", allocationSize = 1)
 @Entity
 @Table(name = "questoes_gameplay")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class GameplayQuestions {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "questoes_gameplay_seq")
     private Long id;
 
     @Column(name = "pontuacao")
-    private Long score;
+    private Long score = 0L;
     @Column(name = "foi_jogado")
-    private Boolean wasPlayed;
+    private Boolean wasPlayed = false;
     @Column(name = "resposta_correta")
-    private Boolean correctAnswer;
+    private Boolean correctAnswer = false;
 
     @ManyToOne
     @JoinColumn(name = "gameplay_id")
@@ -144,7 +146,6 @@ public class GameplayQuestions {
                 ", score=" + score +
                 ", wasPlayed=" + wasPlayed +
                 ", correctAnswer=" + correctAnswer +
-                ", gameplay=" + gameplay +
                 ", question=" + question +
                 '}';
     }
