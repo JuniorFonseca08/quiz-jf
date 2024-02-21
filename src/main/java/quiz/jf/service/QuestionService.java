@@ -41,8 +41,4 @@ public class QuestionService {
         return questionRepository.findByTheme(theme);
     }
 
-//    public Optional<Question> findByIdWithAlternatives(Long id){
-//        return questionRepository.findByIdWithAlternatives(id);
-//    }
-
 }

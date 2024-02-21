@@ -27,6 +27,9 @@ public class Gameplay {
     @JsonIgnore
     private QuizRoom quizRoom;
 
+    @Column(name = "pontuacao_total")
+    private Long totalScore = 0L;
+
     @OneToMany(mappedBy = "gameplay", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<GameplayQuestions> questionGameplays = new ArrayList<>();
@@ -40,6 +43,14 @@ public class Gameplay {
         this.id = id;
         this.player = player;
         this.quizRoom = quizRoom;
+        this.questionGameplays = questionGameplays;
+    }
+
+    public Gameplay(Long id, String player, QuizRoom quizRoom, Long totalScore, List<GameplayQuestions> questionGameplays) {
+        this.id = id;
+        this.player = player;
+        this.quizRoom = quizRoom;
+        this.totalScore = totalScore;
         this.questionGameplays = questionGameplays;
     }
 
@@ -75,6 +86,14 @@ public class Gameplay {
         this.questionGameplays = questionGameplays;
     }
 
+    public Long getTotalScore() {
+        return totalScore;
+    }
+
+    public void setTotalScore(Long totalScore) {
+        this.totalScore = totalScore;
+    }
+
 
     public static final class Builder {
         private Gameplay gameplay;
@@ -102,6 +121,11 @@ public class Gameplay {
             return this;
         }
 
+        public Builder totalScore(Long totalScore) {
+            gameplay.setTotalScore(totalScore);
+            return this;
+        }
+
         public Builder questionGameplays(List<GameplayQuestions> questionGameplays) {
             gameplay.setQuestionGameplays(questionGameplays);
             return this;
@@ -117,7 +141,8 @@ public class Gameplay {
         return "Gameplay{" +
                 "id=" + id +
                 ", player='" + player + '\'' +
-                ", questionGameplays=" + questionGameplays +
+                ", quizRoom=" + quizRoom +
+                ", totalScore=" + totalScore +
                 '}';
     }
 }

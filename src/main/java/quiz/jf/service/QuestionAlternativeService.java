@@ -18,18 +18,6 @@ public class QuestionAlternativeService {
     @Autowired
     private QuestionRepository questionRepository;
 
-//    public List<QuestionAlternative> saveAlternativesWithQuestion(List<QuestionAlternative> alternativeList, Question question){
-//
-//        for (QuestionAlternative alternative : alternativeList){
-//            alternative.setQuizQuestion(question);
-//        }
-//        return questionAlternativeRepository.saveAll(alternativeList);
-//    }
-
-//    public QuestionAlternative save(QuestionAlternative alternative){
-//        return questionAlternativeRepository.save(alternative);
-//    }
-
     public List<QuestionAlternative> findAll(){
         return questionAlternativeRepository.findAll();
     }

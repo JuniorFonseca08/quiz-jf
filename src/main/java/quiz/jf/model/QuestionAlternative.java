@@ -1,8 +1,10 @@
 package quiz.jf.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import jakarta.persistence.*;
 @SequenceGenerator(name = "alternativa_seq", allocationSize = 1)
 @Entity
@@ -14,11 +16,11 @@ public class QuestionAlternative {
     private Long id;
     @Column(name = "alternativa")
     private String alternative;
+
     @Column(name = "eh_correta")
     private boolean isCorrect;
     @ManyToOne
     @JoinColumn(name = "questao_id")
-    @JsonIgnore
     private Question question;
 
     public QuestionAlternative(){
@@ -42,6 +44,11 @@ public class QuestionAlternative {
         this.question = question;
     }
 
+    public QuestionAlternative(Long id, String alternative) {
+        this.id = id;
+        this.alternative = alternative;
+    }
+
     public Long getId() {
         return id;
     }
@@ -62,6 +69,7 @@ public class QuestionAlternative {
         return isCorrect;
     }
 
+    @JsonIgnore
     public void setCorrect(boolean correct) {
         isCorrect = correct;
     }
@@ -114,4 +122,5 @@ public class QuestionAlternative {
                 ", isCorrect=" + isCorrect +
                 '}';
     }
+
 }

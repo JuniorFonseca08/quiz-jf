@@ -39,5 +39,4 @@ public class QuizRoomService {
         return playerRepository.findByNickName(nickName);
     }
 
-
 }

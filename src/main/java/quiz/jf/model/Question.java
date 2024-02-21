@@ -1,9 +1,7 @@
 package quiz.jf.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -41,6 +39,11 @@ public class Question {
     public Question(String query, String theme, List<QuestionAlternative> alternatives) {
         this.query = query;
         this.theme = theme;
+        this.alternatives = alternatives;
+    }
+
+    public Question(String query, List<QuestionAlternative> alternatives) {
+        this.query = query;
         this.alternatives = alternatives;
     }
 

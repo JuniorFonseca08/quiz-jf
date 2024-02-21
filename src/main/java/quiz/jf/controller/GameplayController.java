@@ -1,9 +1,13 @@
 package quiz.jf.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import quiz.jf.model.Gameplay;
+import quiz.jf.model.GameplayQuestions;
 import quiz.jf.model.Question;
+import quiz.jf.model.QuestionAlternative;
 import quiz.jf.service.GameplayQuestionsService;
 import quiz.jf.service.GameplayService;
 
@@ -29,21 +33,28 @@ public class GameplayController {
         return gameplayQuestionsService.findAllQuestionsByGameplay(gameplay);
     }
 
-//    @GetMapping("/{gameplayId}/nextUnansweredQuestion")
-//    public ResponseEntity<Question> getNextUnansweredQuestion(@PathVariable Long gameplayId) {
-//        Gameplay gameplay = gameplayService.findById(gameplayId);
-//        Question nextUnansweredQuestion = gameplayQuestionsService.findNextUnansweredQuestion(gameplay);
-//
-//        if (nextUnansweredQuestion != null) {
-//            return ResponseEntity.ok(nextUnansweredQuestion);
-//        } else {
-//            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-//        }
-//    }
 
-    @PostMapping("/check-answer")
-    public Question checkAnswer(Gameplay question, String playerAnswer) {
-        Question isCorrect = gameplayQuestionsService.findNextUnansweredQuestion(question, playerAnswer);
-        return isCorrect;
+    @PostMapping("/questions/response")
+    public ResponseEntity<?> findNextUnansweredQuestion(Gameplay gameplay, int playerAnswer) {
+        GameplayQuestions nextQuestion = gameplayQuestionsService.findNextUnansweredQuestion(gameplay, playerAnswer);
+        if (nextQuestion != null) {
+            return ResponseEntity.ok("Resposta enviada com sucesso.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Todas as perguntas foram respondidas");
+        }
+    }
+
+    @GetMapping("/{gameplayId}/find-nex-question")
+    public ResponseEntity<List<QuestionAlternative>> findQuestionNoResponse(@PathVariable Long gameplayId) {
+        Gameplay gameplay = gameplayService.findById(gameplayId);
+        if (gameplay == null) {
+            return ResponseEntity.notFound().build();
+        }
+        List<QuestionAlternative> nextQuestion = gameplayQuestionsService.findNextQuestion(gameplay);
+        if (nextQuestion != null) {
+            return ResponseEntity.ok(nextQuestion);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

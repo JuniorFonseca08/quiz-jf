@@ -1,12 +1,16 @@
 package quiz.jf.service;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import quiz.jf.model.Gameplay;
 import quiz.jf.model.GameplayQuestions;
 import quiz.jf.model.Question;
 import quiz.jf.model.QuestionAlternative;
 import quiz.jf.repository.GameplayQuestionsRepository;
+import quiz.jf.repository.GameplayRepository;
+import quiz.jf.repository.QuestionAlternativeRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +20,12 @@ public class GameplayQuestionsService {
 
     @Autowired
     private GameplayQuestionsRepository gameplayQuestionsRepository;
+
+    @Autowired
+    private QuestionAlternativeRepository questionAlternativeRepository;
+
+    @Autowired
+    private GameplayRepository gameplayRepository;
 
     public GameplayQuestions save(GameplayQuestions gameplayQuestions){
         return gameplayQuestionsRepository.save(gameplayQuestions);
@@ -30,7 +40,7 @@ public class GameplayQuestionsService {
         return gameplayQuestionsRepository.findAllQuestionsByGameplay(gameplay);
     }
 
-    public Question findNextUnansweredQuestion(Gameplay gameplay, String playerAnswer) {
+    public List<QuestionAlternative> findNextQuestion(Gameplay gameplay) {
         List<GameplayQuestions> questionGameplays = gameplay.getQuestionGameplays();
 
         Optional<GameplayQuestions> nextQuestion = questionGameplays.stream()
@@ -38,36 +48,46 @@ public class GameplayQuestionsService {
                 .findFirst();
 
         if (nextQuestion.isPresent()) {
-            GameplayQuestions nextQuestionObject = nextQuestion.get();
-            Question question = nextQuestionObject.getQuestion();
-
-            // Verifique se a resposta do jogador está correta
-            boolean isCorrectAnswer = checkAnswer(question, playerAnswer);
-
-            // Atualize o atributo correctAnswer se a resposta for correta
-            if (isCorrectAnswer) {
-                nextQuestionObject.setCorrectAnswer(true);
-                // Salve a alteração no banco de dados
-                save(nextQuestionObject);
-            }
-
-            return question;
+            Question nextQuestionObject = nextQuestion.get().getQuestion();
+            return nextQuestionObject.getAlternatives();
         }
         return null;
     }
+    @Transactional
+    public GameplayQuestions findNextUnansweredQuestion(Gameplay gameplay, int playerAnswer) {
 
-    // Método para verificar se a resposta do jogador está correta
-    public boolean checkAnswer(Question question, String playerAnswer) {
-        for (QuestionAlternative questionAlternative : question.getAlternatives()) {
-            // Verifica se a alternativa é a correta e se o texto corresponde à resposta do jogador
-            if (questionAlternative.isCorrect() && questionAlternative.getAlternative().equalsIgnoreCase(playerAnswer)) {
-                return true; // Resposta correta encontrada
+        List<QuestionAlternative> nextQuestionAlternatives = findNextQuestion(gameplay);
+        if (nextQuestionAlternatives != null && !nextQuestionAlternatives.isEmpty()) {
+            // Encontra o ID da alternativa correta
+            Long correctAlternativeId = nextQuestionAlternatives.stream()
+                    .filter(QuestionAlternative::isCorrect)
+                    .map(QuestionAlternative::getId)
+                    .findFirst()
+                    .orElse(null);
+
+            // Encontra a instância de GameplayQuestions associada à Question
+            GameplayQuestions nextQuestion = gameplay.getQuestionGameplays().stream()
+                    .filter(question -> question.getQuestion().equals(nextQuestionAlternatives.get(0).getQuizQuestion()))
+                    .findFirst()
+                    .orElse(null);
+
+            if (nextQuestion != null) {
+                nextQuestion.setWasPlayed(true);
+
+                if(correctAlternativeId != null && playerAnswer == correctAlternativeId){
+                    nextQuestion.setCorrectAnswer(true);
+                    nextQuestion.setScore(100L);
+                }
+                return gameplayQuestionsRepository.save(nextQuestion);
             }
         }
-        return false;
+        updateTotalScore(gameplay.getId());
+        return null;
     }
 
-
-
+    @Transactional
+    public void updateTotalScore(Long gameplayId) {
+        gameplayRepository.calculateTotalScoreByGameplayId(gameplayId);
+    }
 
 }
