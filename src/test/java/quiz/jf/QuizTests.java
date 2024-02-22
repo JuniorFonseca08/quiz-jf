@@ -28,37 +28,37 @@ public class QuizTests {
     void chamaSequenciaCrud(){
         //novoPlayer();
         //salvarQuestao();
-        criarSala();
+        //criarSala();
     }
 
 
-    private void novoPlayer(){
-        Player playerSave = new Player("Theo", "Thais Moura", 30, "theomoura@gmail.com", "123Mudar");
-        playerService.playerSave(playerSave);
-        System.out.println("Retorno salvado: " + playerSave);
+//    private void novoPlayer(){
+//        Player playerSave = new Player("Theo", "Thais Moura", 30, "theomoura@gmail.com", "123Mudar");
+//        playerService.playerSave(playerSave);
+//        System.out.println("Retorno salvado: " + playerSave);
+//
+//        //return playerSave;
+//    }
 
-        //return playerSave;
-    }
-
-    private void criarSala(){
-        Player player = new Player(1L, "Nuno");
-       // quizRoomService.startQuizRoom("Nuno","Jogos");
-    }
+//    private void criarSala(){
+//        Player player = new Player(1L, "Nuno");
+//       // quizRoomService.startQuizRoom("Nuno","Jogos");
+//    }
 
 
-    private void salvarQuestao(){
-        Question question = new Question();
-        question.setQuery("Qual é o jogo mais premiado da história?");
-        question.setTheme("Jogos");
-
-        List<QuestionAlternative> alternatives = new ArrayList<>();
-        alternatives.add(new QuestionAlternative("The Legend of Zelda: Breath of the Wild",false));
-        alternatives.add(new QuestionAlternative("The Witcher 3: Wild Hunt",true));
-        alternatives.add(new QuestionAlternative("Red Dead Redemption 2",false));
-        alternatives.add(new QuestionAlternative("God of War",false));
-
-        question.setAlternatives(alternatives);
-
-        questionService.saveQuestion(question);
-    }
+//    private void salvarQuestao(){
+//        Question question = new Question();
+//        question.setQuery("Qual é o jogo mais premiado da história?");
+//        question.setTheme("Jogos");
+//
+//        List<QuestionAlternative> alternatives = new ArrayList<>();
+//        alternatives.add(new QuestionAlternative("The Legend of Zelda: Breath of the Wild",false));
+//        alternatives.add(new QuestionAlternative("The Witcher 3: Wild Hunt",true));
+//        alternatives.add(new QuestionAlternative("Red Dead Redemption 2",false));
+//        alternatives.add(new QuestionAlternative("God of War",false));
+//
+//        question.setAlternatives(alternatives);
+//
+//        questionService.saveQuestion(question);
+//    }
 }

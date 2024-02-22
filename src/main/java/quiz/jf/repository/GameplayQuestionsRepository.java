@@ -13,7 +13,8 @@ public interface GameplayQuestionsRepository extends JpaRepository<GameplayQuest
     @Query("SELECT gq.question FROM GameplayQuestions gq WHERE gq.gameplay = :gameplay")
     List<Question> findAllQuestionsByGameplay(Gameplay gameplay);
 
-    GameplayQuestions findFirstByWasPlayedFalse();
+    @Query("SELECT gq FROM GameplayQuestions gq " +
+            "WHERE gq.gameplay = :gameplay AND gq.wasPlayed = false")
+    List<GameplayQuestions> findNextUnansweredQuestionByGameplay(@Param("gameplay") Gameplay gameplay);
 
 }
-//@Param("resposta_correta") boolean wasCorrect

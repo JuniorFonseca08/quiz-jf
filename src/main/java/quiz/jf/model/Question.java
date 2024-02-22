@@ -11,7 +11,6 @@ import java.util.List;
 @SequenceGenerator(name = "questao_seq", allocationSize = 1)
 @Entity
 @Table(name = "questao")
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "questao_seq")
@@ -21,7 +20,7 @@ public class Question {
     @Column(name = "tema")
     private String theme;
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JsonManagedReference
     private List<QuestionAlternative> alternatives = new ArrayList<>();
 
 

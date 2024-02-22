@@ -2,6 +2,9 @@ package quiz.jf.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import quiz.jf.builder.QuizRoomMapper;
+import quiz.jf.dto.PlayerDTO;
+import quiz.jf.dto.QuizRoomDTO;
 import quiz.jf.model.Player;
 import quiz.jf.model.QuizRoom;
 import quiz.jf.repository.PlayerRepository;
@@ -14,8 +17,10 @@ public class QuizRoomService {
     private QuizRoomRepository quizRoomRepository;
     @Autowired
     private PlayerRepository playerRepository;
+    @Autowired
+    private QuizRoomMapper quizRoomMapper;
 
-    public QuizRoom startQuizRoom(String theme, String nickName){
+    public QuizRoomDTO startQuizRoom(String theme, String nickName){
         Player player = playerRepository.findByNickName(nickName);
 
         if (player == null) {
@@ -24,19 +29,16 @@ public class QuizRoomService {
         QuizRoom existingRoom = quizRoomRepository.findByThemeAndPlayer(theme, player);
 
         if (existingRoom != null){
-            return existingRoom;
+            return quizRoomMapper.toDTO(existingRoom);
         } else {
             QuizRoom newRoom = new QuizRoom(theme, player);
-            return quizRoomRepository.save(newRoom);
+            return quizRoomMapper.toDTO(quizRoomRepository.save(newRoom));
         }
     }
 
-    public QuizRoom findById(Long id){
-        return quizRoomRepository.findById(id).get();
+    public QuizRoomDTO findById(Long id){
+        return quizRoomMapper.toDTO(quizRoomRepository.findById(id).get());
     }
 
-    public Player findPlayerByNickName(String nickName){
-        return playerRepository.findByNickName(nickName);
-    }
 
 }

@@ -4,16 +4,21 @@ package quiz.jf.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import quiz.jf.model.Gameplay;
-import quiz.jf.model.GameplayQuestions;
-import quiz.jf.model.Question;
-import quiz.jf.model.QuestionAlternative;
+import quiz.jf.builder.GameplayQuestionsMapper;
+import quiz.jf.builder.QuestionAlternativeMapper;
+import quiz.jf.builder.QuestionMapper;
+import quiz.jf.dto.*;
+import quiz.jf.model.*;
 import quiz.jf.repository.GameplayQuestionsRepository;
 import quiz.jf.repository.GameplayRepository;
+import quiz.jf.repository.PlayerRepository;
 import quiz.jf.repository.QuestionAlternativeRepository;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class GameplayQuestionsService {
@@ -27,61 +32,90 @@ public class GameplayQuestionsService {
     @Autowired
     private GameplayRepository gameplayRepository;
 
-    public GameplayQuestions save(GameplayQuestions gameplayQuestions){
-        return gameplayQuestionsRepository.save(gameplayQuestions);
+    @Autowired
+    private PlayerRepository playerRepository;
+    @Autowired
+    private GameplayQuestionsMapper gameplayQuestionsMapper;
+    @Autowired
+    private QuestionAlternativeMapper questionAlternativeMapper;
+    @Autowired
+    private QuestionMapper questionMapper;
+
+    public GameplayQuestionsDTO save(GameplayQuestionsDTO gameplayQuestionsDTO){
+        GameplayQuestions gameplayQuestions = gameplayQuestionsMapper.toEntity(gameplayQuestionsDTO);
+        return gameplayQuestionsMapper.toDTO(gameplayQuestionsRepository.save(gameplayQuestions));
     }
 
-    public GameplayQuestions findById(Long id) {
-        return gameplayQuestionsRepository.findById(id)
+    public GameplayQuestionsDTO findById(Long id) {
+        GameplayQuestions gameplayQuestions = gameplayQuestionsRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Gameplay question not found with ID: " + id));
+        return gameplayQuestionsMapper.toDTO(gameplayQuestions);
     }
 
     public List<Question> findAllQuestionsByGameplay(Gameplay gameplay){
         return gameplayQuestionsRepository.findAllQuestionsByGameplay(gameplay);
     }
 
-    public List<QuestionAlternative> findNextQuestion(Gameplay gameplay) {
-        List<GameplayQuestions> questionGameplays = gameplay.getQuestionGameplays();
+    public SimpleQuestionDTO findNextQuestion(Long gameplayId) {
+        Gameplay gameplay = gameplayRepository.findById(gameplayId)
+                .orElseThrow(() -> new IllegalArgumentException("Gameplay not found with ID: " + gameplayId));
 
-        Optional<GameplayQuestions> nextQuestion = questionGameplays.stream()
-                .filter(question -> !question.getWasPlayed())
-                .findFirst();
+        List<GameplayQuestions> unansweredQuestions = gameplayQuestionsRepository.findNextUnansweredQuestionByGameplay(gameplay);
 
-        if (nextQuestion.isPresent()) {
-            Question nextQuestionObject = nextQuestion.get().getQuestion();
-            return nextQuestionObject.getAlternatives();
+        if (!unansweredQuestions.isEmpty()) {
+            GameplayQuestions nextQuestion = unansweredQuestions.get(0);
+            Question question = nextQuestion.getQuestion();
+
+            SimpleQuestionDTO simpleQuestionDTO = new SimpleQuestionDTO();
+            simpleQuestionDTO.setId(question.getId());
+            simpleQuestionDTO.setQuery(question.getQuery());
+            simpleQuestionDTO.setTheme(question.getTheme());
+
+            // Preencher as alternativas com seus IDs
+            List<AlternativeDTO> alternativeDTOs = question.getAlternatives().stream()
+                    .map(alternative -> {
+                        AlternativeDTO alternativeDTO = new AlternativeDTO();
+                        alternativeDTO.setId(alternative.getId());
+                        alternativeDTO.setAlternative(alternative.getAlternative());
+                        return alternativeDTO;
+                    })
+                    .collect(Collectors.toList());
+
+            simpleQuestionDTO.setAlternatives(alternativeDTOs);
+            return simpleQuestionDTO;
         }
         return null;
     }
+
+
+
     @Transactional
-    public GameplayQuestions findNextUnansweredQuestion(Gameplay gameplay, int playerAnswer) {
+    public GameplayQuestionsDTO playerResponse(GameplayDTO gameplayDTO, int playerAnswer) {
 
-        List<QuestionAlternative> nextQuestionAlternatives = findNextQuestion(gameplay);
-        if (nextQuestionAlternatives != null && !nextQuestionAlternatives.isEmpty()) {
-            // Encontra o ID da alternativa correta
-            Long correctAlternativeId = nextQuestionAlternatives.stream()
-                    .filter(QuestionAlternative::isCorrect)
-                    .map(QuestionAlternative::getId)
-                    .findFirst()
-                    .orElse(null);
+        Optional<Gameplay> optionalGameplay = gameplayRepository.findById(gameplayDTO.getId());
 
-            // Encontra a instância de GameplayQuestions associada à Question
-            GameplayQuestions nextQuestion = gameplay.getQuestionGameplays().stream()
-                    .filter(question -> question.getQuestion().equals(nextQuestionAlternatives.get(0).getQuizQuestion()))
-                    .findFirst()
-                    .orElse(null);
+        if (optionalGameplay.isPresent()) {
+            Gameplay gameplay = optionalGameplay.get();
 
-            if (nextQuestion != null) {
+            List<GameplayQuestions> unansweredQuestions = gameplayQuestionsRepository.findNextUnansweredQuestionByGameplay(gameplay);
+
+            if (!unansweredQuestions.isEmpty()) {
+                GameplayQuestions nextQuestion = unansweredQuestions.get(0);
+
+                boolean correctAnswer = nextQuestion.getQuestion().getAlternatives().stream()
+                        .anyMatch(alternative -> alternative.getId() == playerAnswer && alternative.isCorrect());
                 nextQuestion.setWasPlayed(true);
 
-                if(correctAlternativeId != null && playerAnswer == correctAlternativeId){
+                if (correctAnswer) {
                     nextQuestion.setCorrectAnswer(true);
                     nextQuestion.setScore(100L);
                 }
-                return gameplayQuestionsRepository.save(nextQuestion);
+                GameplayQuestions savedQuestion = gameplayQuestionsRepository.save(nextQuestion);
+                return gameplayQuestionsMapper.toDTO(savedQuestion);
             }
         }
-        updateTotalScore(gameplay.getId());
+        updateTotalScore(gameplayDTO.getId());
+        updatePlayerScore(gameplayDTO.getId());
         return null;
     }
 
@@ -90,4 +124,12 @@ public class GameplayQuestionsService {
         gameplayRepository.calculateTotalScoreByGameplayId(gameplayId);
     }
 
+    @Transactional
+    public void updatePlayerScore(Long gameplayId){
+        Gameplay gameplay = gameplayRepository.findById(gameplayId)
+                .orElseThrow(() -> new IllegalArgumentException("Gameplay not found with ID: " + gameplayId));
+
+        Long playerId = gameplay.getQuizRoom().getPlayer().getId();
+        playerRepository.updatePlayerScore(playerId);
+    }
 }

@@ -2,11 +2,14 @@ package quiz.jf.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import quiz.jf.builder.QuestionMapper;
+import quiz.jf.dto.QuestionDTO;
 import quiz.jf.model.Question;
 import quiz.jf.repository.QuestionAlternativeRepository;
 import quiz.jf.repository.QuestionRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionService {
@@ -14,31 +17,44 @@ public class QuestionService {
     private QuestionRepository questionRepository;
     @Autowired
     private QuestionAlternativeRepository questionAlternativeRepository;
+    @Autowired
+    private QuestionMapper questionMapper;
 
-    public Question saveQuestion(Question question){
-        return questionRepository.save(question);
+    public QuestionDTO saveQuestion(QuestionDTO questionDTO){
+        return questionMapper.toDTO(questionRepository.save(questionMapper.toEntity(questionDTO)));
     }
 
-    public List<Question> saveAll(List<Question> questionList){
-        List<Question> savedQuestions = questionRepository.saveAll(questionList);
+    public List<QuestionDTO> saveAll(List<QuestionDTO> questionDTOList){
+        List<Question> questions = questionDTOList.stream()
+                .map(questionMapper::toEntity)
+                .collect(Collectors.toList());
+        List<Question> savedQuestions = questionRepository.saveAll(questions);
 
         savedQuestions.forEach(quizQuestion -> {
-            quizQuestion.getAlternatives().forEach(alternative -> alternative.setQuizQuestion(quizQuestion));
+            quizQuestion.getAlternatives().forEach(alternative -> alternative.setQuestion(quizQuestion));
             questionAlternativeRepository.saveAll(quizQuestion.getAlternatives());
         });
-        return questionRepository.saveAll(questionList);
+
+        return savedQuestions.stream()
+                .map(questionMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
-    public List<Question> findAll(){
-        return questionRepository.findAll();
+    public List<QuestionDTO> findAll(){
+        List<Question> questions = questionRepository.findAll();
+        return questions.stream()
+                .map(questionMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
-    public Question findById(Long id){
-        return questionRepository.findById(id).get();
+    public QuestionDTO findById(Long id){
+        return questionMapper.toDTO(questionRepository.findById(id).get());
     }
 
-    public List<Question> findByTheme(String theme){
-        return questionRepository.findByTheme(theme);
+    public List<QuestionDTO> findByTheme(String theme){
+        return questionRepository.findByTheme(theme).stream()
+                .map(questionMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
 }

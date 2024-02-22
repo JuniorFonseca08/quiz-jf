@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import quiz.jf.dto.*;
 import quiz.jf.model.Gameplay;
 import quiz.jf.model.GameplayQuestions;
 import quiz.jf.model.Question;
@@ -23,20 +24,25 @@ public class GameplayController {
     private GameplayQuestionsService gameplayQuestionsService;
 
     @PostMapping("/create-gameplay")
-    public Gameplay createGameplay(@RequestParam Long roomId){
+    public GameplayDTO createGameplay(@RequestParam Long roomId){
         return gameplayService.createGameplay(roomId);
     }
 
     @GetMapping("/{gameplayId}/questions")
-    public List<Question> findAllQuestionsByGameplay(@PathVariable Long gameplayId){
-        Gameplay gameplay = gameplayService.findById(gameplayId);
-        return gameplayQuestionsService.findAllQuestionsByGameplay(gameplay);
+    public List<QuestionDTO> findAllQuestionsByGameplay(@PathVariable Long gameplayId){
+        //Gameplay gameplay = gameplayService.findById(gameplayId);
+        List<QuestionDTO> questions = gameplayService.findAllQuestionsByGameplay(gameplayId);
+        return questions;
     }
 
 
-    @PostMapping("/questions/response")
-    public ResponseEntity<?> findNextUnansweredQuestion(Gameplay gameplay, int playerAnswer) {
-        GameplayQuestions nextQuestion = gameplayQuestionsService.findNextUnansweredQuestion(gameplay, playerAnswer);
+    @PostMapping("/{gameplayId}/player-response")
+    public ResponseEntity<?> playerResponse(@PathVariable Long gameplayId, @RequestParam int playerAnswer) {
+        GameplayDTO gameplayDTO = gameplayService.findById(gameplayId);
+        if (gameplayDTO == null) {
+            return ResponseEntity.notFound().build();
+        }
+        GameplayQuestionsDTO nextQuestion = gameplayQuestionsService.playerResponse(gameplayDTO, playerAnswer);
         if (nextQuestion != null) {
             return ResponseEntity.ok("Resposta enviada com sucesso.");
         } else {
@@ -44,17 +50,13 @@ public class GameplayController {
         }
     }
 
-    @GetMapping("/{gameplayId}/find-nex-question")
-    public ResponseEntity<List<QuestionAlternative>> findQuestionNoResponse(@PathVariable Long gameplayId) {
-        Gameplay gameplay = gameplayService.findById(gameplayId);
-        if (gameplay == null) {
-            return ResponseEntity.notFound().build();
-        }
-        List<QuestionAlternative> nextQuestion = gameplayQuestionsService.findNextQuestion(gameplay);
-        if (nextQuestion != null) {
-            return ResponseEntity.ok(nextQuestion);
+    @GetMapping("/gameplay/{gameplayId}/next-question")
+    public ResponseEntity<?> getNextQuestion(@PathVariable Long gameplayId) {
+        SimpleQuestionDTO nextQuestions = gameplayQuestionsService.findNextQuestion(gameplayId);
+        if (nextQuestions != null) {
+            return ResponseEntity.ok(nextQuestions);
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No unanswered questions found.");
         }
     }
 }

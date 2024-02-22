@@ -2,6 +2,7 @@ package quiz.jf.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import quiz.jf.dto.QuestionDTO;
 import quiz.jf.model.Question;
 import quiz.jf.service.QuestionService;
 
@@ -14,13 +15,13 @@ public class QuestionController {
     @Autowired
     private QuestionService questionService;
 
-    @GetMapping("find-all")
-    public List<Question> findAllQuestions() {
+    @GetMapping("/find-all")
+    public List<QuestionDTO> findAllQuestions() {
         return questionService.findAll();
     }
 
-    @GetMapping("find-by-id/{id}")
-    public Question findById(@PathVariable Long id){
+    @GetMapping("/find-by-id/{id}")
+    public QuestionDTO findById(@PathVariable Long id){
         return questionService.findById(id);
     }
 
@@ -30,17 +31,13 @@ public class QuestionController {
 //    }
 
     @PostMapping("/save")
-    public Question save(@RequestBody Question question){
-        return questionService.saveQuestion(question);
+    public QuestionDTO save(@RequestBody QuestionDTO questionDTO){
+        return questionService.saveQuestion(questionDTO);
     }
 
     @PostMapping("/save-all")
-    public List<Question> saveAll(@RequestBody List<Question> questionList){
-        return questionService.saveAll(questionList);
+    public List<QuestionDTO> saveAll(@RequestBody List<QuestionDTO> questionDTOList){
+        return questionService.saveAll(questionDTOList);
     }
 
-//    @GetMapping("/findByIdWithAlternatives/{id}")
-//    public Optional<Question> findByIdWithAlternatives(@PathVariable Long id){
-//        return questionService.findByIdWithAlternatives(id);
-//    }
 }
