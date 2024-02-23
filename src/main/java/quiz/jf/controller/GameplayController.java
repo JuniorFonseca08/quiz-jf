@@ -30,7 +30,6 @@ public class GameplayController {
 
     @GetMapping("/{gameplayId}/questions")
     public List<QuestionDTO> findAllQuestionsByGameplay(@PathVariable Long gameplayId){
-        //Gameplay gameplay = gameplayService.findById(gameplayId);
         List<QuestionDTO> questions = gameplayService.findAllQuestionsByGameplay(gameplayId);
         return questions;
     }
@@ -50,7 +49,7 @@ public class GameplayController {
         }
     }
 
-    @GetMapping("/gameplay/{gameplayId}/next-question")
+    @GetMapping("/{gameplayId}/next-question")
     public ResponseEntity<?> getNextQuestion(@PathVariable Long gameplayId) {
         SimpleQuestionDTO nextQuestions = gameplayQuestionsService.findNextQuestion(gameplayId);
         if (nextQuestions != null) {

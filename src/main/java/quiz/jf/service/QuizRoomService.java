@@ -26,14 +26,8 @@ public class QuizRoomService {
         if (player == null) {
             throw new IllegalArgumentException("Player not found with nickName: " + nickName);
         }
-        QuizRoom existingRoom = quizRoomRepository.findByThemeAndPlayer(theme, player);
-
-        if (existingRoom != null){
-            return quizRoomMapper.toDTO(existingRoom);
-        } else {
-            QuizRoom newRoom = new QuizRoom(theme, player);
-            return quizRoomMapper.toDTO(quizRoomRepository.save(newRoom));
-        }
+        QuizRoom newRoom = new QuizRoom(theme, player);
+        return quizRoomMapper.toDTO(quizRoomRepository.save(newRoom));
     }
 
     public QuizRoomDTO findById(Long id){

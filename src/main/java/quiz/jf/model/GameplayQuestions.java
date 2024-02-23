@@ -20,12 +20,10 @@ public class GameplayQuestions {
     private Boolean wasPlayed = false;
     @Column(name = "resposta_correta")
     private Boolean correctAnswer = false;
-
     @ManyToOne
     @JoinColumn(name = "gameplay_id")
     @JsonIgnore
     private Gameplay gameplay;
-
     @ManyToOne
     @JoinColumn(name = "question_id")
     @JsonIgnore

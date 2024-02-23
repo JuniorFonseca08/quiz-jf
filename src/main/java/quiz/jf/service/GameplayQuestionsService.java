@@ -25,21 +25,12 @@ public class GameplayQuestionsService {
 
     @Autowired
     private GameplayQuestionsRepository gameplayQuestionsRepository;
-
-    @Autowired
-    private QuestionAlternativeRepository questionAlternativeRepository;
-
     @Autowired
     private GameplayRepository gameplayRepository;
-
     @Autowired
     private PlayerRepository playerRepository;
     @Autowired
     private GameplayQuestionsMapper gameplayQuestionsMapper;
-    @Autowired
-    private QuestionAlternativeMapper questionAlternativeMapper;
-    @Autowired
-    private QuestionMapper questionMapper;
 
     public GameplayQuestionsDTO save(GameplayQuestionsDTO gameplayQuestionsDTO){
         GameplayQuestions gameplayQuestions = gameplayQuestionsMapper.toEntity(gameplayQuestionsDTO);
@@ -71,7 +62,6 @@ public class GameplayQuestionsService {
             simpleQuestionDTO.setQuery(question.getQuery());
             simpleQuestionDTO.setTheme(question.getTheme());
 
-            // Preencher as alternativas com seus IDs
             List<AlternativeDTO> alternativeDTOs = question.getAlternatives().stream()
                     .map(alternative -> {
                         AlternativeDTO alternativeDTO = new AlternativeDTO();
@@ -87,8 +77,6 @@ public class GameplayQuestionsService {
         return null;
     }
 
-
-
     @Transactional
     public GameplayQuestionsDTO playerResponse(GameplayDTO gameplayDTO, int playerAnswer) {
 
@@ -100,7 +88,7 @@ public class GameplayQuestionsService {
             List<GameplayQuestions> unansweredQuestions = gameplayQuestionsRepository.findNextUnansweredQuestionByGameplay(gameplay);
 
             if (!unansweredQuestions.isEmpty()) {
-                GameplayQuestions nextQuestion = unansweredQuestions.get(0);
+                GameplayQuestions nextQuestion = unansweredQuestions.getFirst();
 
                 boolean correctAnswer = nextQuestion.getQuestion().getAlternatives().stream()
                         .anyMatch(alternative -> alternative.getId() == playerAnswer && alternative.isCorrect());

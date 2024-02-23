@@ -21,8 +21,6 @@ public class GameplayService {
     @Autowired
     private GameplayRepository gameplayRepository;
     @Autowired
-    private GameplayQuestionsService gameplayQuestionsService;
-    @Autowired
     private QuestionService questionService;
     @Autowired
     private QuizRoomService quizRoomService;
@@ -68,10 +66,9 @@ public class GameplayService {
         if (gameplay != null) {
             return gameplay.getQuestionGameplays().stream()
                     .map(GameplayQuestions::getQuestion)
-                    .map(questionMapper::toDTO) // Substitua "questionMapper" pelo seu mapper de QuestionDTO
+                    .map(questionMapper::toDTO)
                     .collect(Collectors.toList());
         } else {
-            // Lida com o caso em que o gameplay não é encontrado
             return Collections.emptyList();
         }
     }

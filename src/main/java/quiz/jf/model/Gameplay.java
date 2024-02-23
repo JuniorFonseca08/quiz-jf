@@ -18,18 +18,14 @@ public class Gameplay {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gameplay_seq")
     private Long id;
-
     @Column(name = "jogador")
     private String player;
-
     @ManyToOne
     @JoinColumn(name = "quiz_sala_id")
     @JsonIgnore
     private QuizRoom quizRoom;
-
     @Column(name = "pontuacao_total")
     private Long totalScore = 0L;
-
     @OneToMany(mappedBy = "gameplay", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<GameplayQuestions> questionGameplays = new ArrayList<>();

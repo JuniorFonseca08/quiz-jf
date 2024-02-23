@@ -20,5 +20,4 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
     @Query(value = "UPDATE Player p SET p.playerScore = COALESCE((SELECT SUM(g.totalScore) FROM Gameplay g WHERE g.quizRoom.player = p), 0) WHERE p.id = :playerId")
     void updatePlayerScore(@Param("playerId") Long playerId);
 
-
 }

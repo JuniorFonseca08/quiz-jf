@@ -34,7 +34,6 @@ public class QuestionService {
             quizQuestion.getAlternatives().forEach(alternative -> alternative.setQuestion(quizQuestion));
             questionAlternativeRepository.saveAll(quizQuestion.getAlternatives());
         });
-
         return savedQuestions.stream()
                 .map(questionMapper::toDTO)
                 .collect(Collectors.toList());
