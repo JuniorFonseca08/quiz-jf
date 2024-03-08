@@ -1,3 +1,9 @@
+## 🔗 Links
+
+[![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/junior-fonseca08/)
+
+
+
 
 # Q U I Z - JF
 
@@ -132,9 +138,3 @@ Tabela que controla a partida, verifica acertos, gera pontuação.
 
 4. **Método para Exibir o Ranking:**
 - Desenvolver um método para exibir o ranking dos jogadores com base em suas pontuações, possibilitando aos usuários visualizar sua posição em relação aos demais jogadores.
-
-## 🔗 Links
-
-[![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/junior-fonseca08/)
-
-
